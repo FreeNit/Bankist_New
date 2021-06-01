@@ -8,6 +8,13 @@ const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.querySelector('#section--1');
 
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+const nav = document.querySelector('.nav');
+
+
 ///////////////////////////////////////
 // Modal window
 //////////////////////////////////////
@@ -100,3 +107,69 @@ document.querySelector('.nav__links').addEventListener('click', function(e) {
     document.querySelector(id).scrollIntoView({behavior: 'smooth'});
   }
 });
+
+
+///////////////////////////////////////
+// ******* Tabbed Component *******
+///////////////////////////////////////
+
+tabsContainer.addEventListener('click', function(e){
+  const clicked = e.target.closest('.operations__tab');
+
+  // Guard clause
+  if(!clicked) return;
+
+  // remove .operations__tab--active class from each tab
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+
+  // add .operations__tab--active class to the clicked tab
+  clicked.classList.add('operations__tab--active');
+
+  // remove .operations__content--active class from each content area
+  tabsContent.forEach(tabContent => tabContent.classList.remove('operations__content--active'));
+  // Activating content area
+  document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations__content--active');
+});
+
+///////////////////////////////////////
+// ******* Menu Fade Animation *******
+///////////////////////////////////////
+
+const handleHover = function(event){
+  if(event.target.classList.contains('nav__link')) {
+    const link = event.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if(el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+
+// nav.addEventListener('mouseover', function(e){
+//   handleHover(e, 0.5);
+// });
+
+// nav.addEventListener('mouseout', function(e) {
+//   handleHover(e, 1);
+// });
+
+// Passing "argument" into handler (0.5 or 1 will be the value of THIS based on mouse event)
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+
+nav.addEventListener('mouseout', handleHover.bind(1));
+
+///////////////////////////////////////
+// ******* Sticky Navigation *******
+///////////////////////////////////////
+
+const initialCoords = section1.getBoundingClientRect();
+
+window.addEventListener('scroll', function() {
+  console.log(window.scrollY);
+  if(window.scrollY > initialCoords.top) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+});
+
